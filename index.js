@@ -8,7 +8,7 @@ import {
   POSTS_PAGE,
   USER_POSTS_PAGE,
 } from "./routes.js";
-import { renderPostsPageComponent } from "./components/posts-page-component.js";
+import { renderPostsPageComponent,renderUserPosts } from "./components/posts-page-component.js";
 import { renderLoadingPageComponent } from "./components/loading-page-component.js";
 import {
   getUserFromLocalStorage,
@@ -47,7 +47,19 @@ export const goToPage = (newPage, data) => {
     if (newPage === ADD_POSTS_PAGE) {
       // Если пользователь не авторизован, то отправляем его на авторизацию перед добавлением поста
       page = user ? ADD_POSTS_PAGE : AUTH_PAGE;
+      if(user){return getPosts({ token: getToken() }, user._id)
+      .then((newPosts) => {
+        // page = POSTS_PAGE;
+        posts = newPosts;
+        renderApp();
+      })
+      .catch((error) => {
+        console.error(error);
+        goToPage(POSTS_PAGE);
+      });}
+      else{
       return renderApp();
+      }
     }
 
     if (newPage === POSTS_PAGE) {
@@ -71,7 +83,17 @@ export const goToPage = (newPage, data) => {
       console.log("Открываю страницу пользователя: ", data.userId);
       page = USER_POSTS_PAGE;
       posts = [];
-            return renderApp();
+      // console.log(data.userId);
+      return getPosts({ token: getToken() }, data.userId)
+      .then((newPosts) => {
+        // page = POSTS_PAGE;
+        posts = newPosts;
+        renderApp();
+      })
+      .catch((error) => {
+        console.error(error);
+        goToPage(POSTS_PAGE);
+      });
     }
 
     page = newPage;
@@ -107,6 +129,8 @@ const renderApp = () => {
   }
 
   if (page === ADD_POSTS_PAGE) {
+
+
     return renderAddPostPageComponent({
       appEl,
       onAddPostClick({ description, imageUrl }) {
@@ -121,6 +145,7 @@ const renderApp = () => {
           goToPage(ADD_POSTS_PAGE);
         });
       },
+      posts
     });
   };
 
@@ -132,9 +157,11 @@ const renderApp = () => {
 
   if (page === USER_POSTS_PAGE) {
     // TODO: реализовать страницу фотографию пользвателя
-
-    appEl.innerHTML = "Здесь будет страница фотографий пользователя";
-    return;
+    return renderUserPosts({
+      appEl,
+    });
+    // appEl.innerHTML = "Здесь будет страница фотографий пользователя";
+    // return;
   }
 };
 

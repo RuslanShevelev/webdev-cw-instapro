@@ -1,6 +1,7 @@
 import { renderHeaderComponent } from "./header-component.js";
 import { uploadImage } from "../api.js";
-export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
+import { renderUserPosts } from "./posts-page-component.js";
+export function renderAddPostPageComponent({ appEl, onAddPostClick, posts }) {
   let imageUrl = "";
   const render = () => {
     // TODO: Реализовать страницу добавления поста
@@ -26,6 +27,7 @@ export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
             <button class="button" id="add-button">Добавить</button>
           </div>
         </div>
+        <div class="my-posts-container"></div>
       </div>`
       ;
 
@@ -56,6 +58,18 @@ export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
     renderHeaderComponent({
       element: document.querySelector(".header-container"),
     });
+    renderUserPosts({
+      appEl: document.querySelector(".my-posts-container"),
+    })
+
+const deleteEls = document.querySelectorAll(".delete-button");
+for (const delEl of deleteEls) {
+  delEl.style.display = "block";
+  delEl.addEventListener("click", (event) => {
+    event.stopPropagation();
+    console.log('проверка');
+  })
+}
 
     document.getElementById("add-button").addEventListener("click", () => {
       if (imageUrl) {

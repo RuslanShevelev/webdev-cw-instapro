@@ -116,6 +116,7 @@
   flex-direction: row;
   align-items: center;
   margin-bottom: 12px;
+  justify-content: center;
 }
 
 .posts-user-header__user-image {
@@ -195,4 +196,113 @@
   box-sizing: border-box;
   width: 100%;
   text-align: center;
+}
+
+.carousel {
+  position: relative;
+  width: 90vw;
+  padding: 10px 40px;
+  border: 1px solid #CCC;
+  border-radius: 15px;
+  background: #cfcbcb;
+  display: flex;
+  justify-content: space-around;
+}
+.user-post{
+  width: 29vw;
+  
+}
+
+.user-post-image {
+  display: block;
+  border: 1px solid #CCC;
+  border-radius: 15px 15px 0 0;
+}
+
+.arrow {
+  position: absolute;
+  top: 280px;
+  padding: 0;
+  background: #979494;
+  border-radius: 15px;
+  border: 1px solid gray;
+  font-size: 24px;
+  line-height: 24px;
+  color: #f5f3f3;
+  display: block;
+}
+
+.arrow:focus {
+  outline: none;
+}
+
+.arrow:hover {
+  background: #ccc;
+  cursor: pointer;
+}
+
+.prev {
+  left: 7px;
+}
+
+.next {
+  right: 7px;
+}
+
+.gallery {
+  width: 90vw;
+  overflow: hidden;
+}
+
+.gallery ul {
+  width: 9999px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  transition: margin-left 250ms;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 1vw;
+  
+}
+
+.gallery li {
+  display: inline-block;
+  
+}
+
+.post-user-image-container {
+  height: 500px;
+  width: 29vw;
+  display: flex;
+  justify-content: flex-start;
+  background-color: #e0e0e0;
+  align-content: stretch;
+  align-items: stretch;
+  border: 1px solid #CCC;
+  border-radius: 15px 15px 0 0;
+}
+.user-post-image{
+  width: 29vw;
+  box-sizing: border-box;
+
+}
+.post-info{
+  max-width: 200px;
+
+}
+.post-footer{
+  background: #ffffff;
+  padding-left: 15px;
+  padding-bottom: 10px;
+  border: 1px solid #CCC;
+  border-radius: 0 0 15px 15px ;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: 20px;
+  align-content: center;
+  flex-wrap: wrap;
+  align-items: center;
 }
