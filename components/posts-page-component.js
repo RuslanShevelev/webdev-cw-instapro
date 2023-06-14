@@ -1,7 +1,6 @@
-import { USER_POSTS_PAGE } from "../routes.js";
+import { USER_POSTS_PAGE} from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
-import { posts, goToPage } from "../index.js";
-
+import { posts, goToPage, onClickLike } from "../index.js";
 export function renderPostsPageComponent({ appEl }) {
   // console.log("Актуальный список постов:", posts);
 
@@ -15,7 +14,7 @@ export function renderPostsPageComponent({ appEl }) {
   const appHtml = `
               <div class="page-container">
                 <div class="header-container"></div>
-                <ul>
+                <ul class="list">
                ${postsHtml}
                 </ul>
               </div>`;
@@ -33,6 +32,7 @@ export function renderPostsPageComponent({ appEl }) {
       });
     });
   }
+  initLikeButtons();
 }
 
 function getPost(post) {
@@ -45,11 +45,11 @@ function getPost(post) {
     <img class="post-image" src=${post.imageUrl}>
   </div>
   <div class="post-likes">
-    <button data-post-id="${post.id}" class="like-button">
+    <button data-post-id="${post.id}" class="like-button ${post.isLiked ? 'active-like' : 'inactive-like'}">
     ${post.isLiked ? '<img src="./assets/images/like-active.svg">' : '<img src="./assets/images/like-not-active.svg">'}
     </button>
     <p class="post-likes-text">
-      Нравится: <strong>${post.likes.length}</strong>
+      ${(post.likes.at(-1))? `Нравится: <strong>${post.likes.at(-1).name}</strong>` : "" }${(post.likes.length-1 > 0)? ` и <strong>еще ${post.likes.length-1}</strong>`: ""} 
     </p>
   </div>
   <p class="post-text">
@@ -64,7 +64,7 @@ function getPost(post) {
 };
 export function renderUserPosts({ appEl }) {
   const postsHtml = posts.map((post) => getUserPost(post)).join("");  
-const user = posts.shift().user;
+const user = posts[0].user;
   const appHtml = `
   <div class="page-container">
   <div class="header-container"></div>
@@ -88,6 +88,8 @@ const user = posts.shift().user;
   renderHeaderComponent({
     element: document.querySelector(".header-container"),
   });
+  initLikeButtons();
+
 
   let i = 1;
   for(let li of carousel.querySelectorAll('li')) {
@@ -129,11 +131,11 @@ function getUserPost(post) {
   <div class="post-footer">
   <div class="post-info">
   <div class="post-likes">
-    <button data-post-id="${post.id}" class="like-button">
+    <button data-post-id="${post.id}" class="like-button ${post.isLiked ? 'active-like' : 'inactive-like'}">
     ${post.isLiked ? '<img src="./assets/images/like-active.svg">' : '<img src="./assets/images/like-not-active.svg">'}
     </button>
     <p class="post-likes-text">
-      Нравится: <strong>${post.likes.length}</strong>
+    ${(post.likes.at(-1))? `Нравится: <strong>${post.likes.at(-1).name}</strong>` : "" }${(post.likes.length-1 > 0)? ` и <strong>еще ${post.likes.length-1}</strong>`: ""} 
     </p>
   </div>
   <p class="post-text">
@@ -144,8 +146,23 @@ function getUserPost(post) {
   ${post.createdAt}
   </p>
   </div>
-  <button class="delete-button">Удалить пост</button>
+  <button class="delete-button" data-post-id="${post.id}">Удалить пост</button>
   </div>
 </li>
 `
 };
+function initLikeButtons(){
+    for (let dislikeEl of document.querySelectorAll('.active-like'))
+    dislikeEl.addEventListener("click", (event) => {
+    event.stopPropagation();
+    dislikeEl.classList.add('-loading-like');
+    onClickLike({id: dislikeEl.dataset.postId}, "dislike");
+    })
+    for (let likeEl of document.querySelectorAll('.inactive-like'))
+    likeEl.addEventListener("click", (event) => {
+    event.stopPropagation();
+    likeEl.classList.add('-loading-like');
+    onClickLike({id: likeEl.dataset.postId}, "like");
+    })
+    
+ };

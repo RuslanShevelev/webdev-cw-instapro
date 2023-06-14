@@ -1,4 +1,4 @@
-import { getPosts, postPost } from "./api.js";
+import { getPosts, postPost, toggleLikes } from "./api.js";
 import { renderAddPostPageComponent } from "./components/add-post-page-component.js";
 import { renderAuthPageComponent } from "./components/auth-page-component.js";
 import {
@@ -8,7 +8,7 @@ import {
   POSTS_PAGE,
   USER_POSTS_PAGE,
 } from "./routes.js";
-import { renderPostsPageComponent,renderUserPosts } from "./components/posts-page-component.js";
+import { renderPostsPageComponent, renderUserPosts } from "./components/posts-page-component.js";
 import { renderLoadingPageComponent } from "./components/loading-page-component.js";
 import {
   getUserFromLocalStorage,
@@ -47,18 +47,20 @@ export const goToPage = (newPage, data) => {
     if (newPage === ADD_POSTS_PAGE) {
       // Если пользователь не авторизован, то отправляем его на авторизацию перед добавлением поста
       page = user ? ADD_POSTS_PAGE : AUTH_PAGE;
-      if(user){return getPosts({ token: getToken() }, user._id)
-      .then((newPosts) => {
-        // page = POSTS_PAGE;
-        posts = newPosts;
-        renderApp();
-      })
-      .catch((error) => {
-        console.error(error);
-        goToPage(POSTS_PAGE);
-      });}
-      else{
-      return renderApp();
+      if (user) {
+        return getPosts({ token: getToken() }, user._id)
+          .then((newPosts) => {
+            // page = POSTS_PAGE;
+            posts = newPosts;
+            renderApp();
+          })
+          .catch((error) => {
+            console.error(error);
+            goToPage(POSTS_PAGE);
+          });
+      }
+      else {
+        return renderApp();
       }
     }
 
@@ -85,15 +87,15 @@ export const goToPage = (newPage, data) => {
       posts = [];
       // console.log(data.userId);
       return getPosts({ token: getToken() }, data.userId)
-      .then((newPosts) => {
-        // page = POSTS_PAGE;
-        posts = newPosts;
-        renderApp();
-      })
-      .catch((error) => {
-        console.error(error);
-        goToPage(POSTS_PAGE);
-      });
+        .then((newPosts) => {
+          // page = POSTS_PAGE;
+          posts = newPosts;
+          renderApp();
+        })
+        .catch((error) => {
+          console.error(error);
+          goToPage(POSTS_PAGE);
+        });
     }
 
     page = newPage;
@@ -129,21 +131,19 @@ const renderApp = () => {
   }
 
   if (page === ADD_POSTS_PAGE) {
-
-
     return renderAddPostPageComponent({
       appEl,
       onAddPostClick({ description, imageUrl }) {
         // TODO: реализовать добавление поста в API
         console.log("Добавляю пост...", { description, imageUrl });
-        postPost({token: getToken()}, description, imageUrl)
-        .then(() => {
-          goToPage(POSTS_PAGE);
-        })
-        .catch((error) => {
-          console.error(error);
-          goToPage(ADD_POSTS_PAGE);
-        });
+        postPost({ token: getToken() }, description, imageUrl)
+          .then(() => {
+            goToPage(POSTS_PAGE);
+          })
+          .catch((error) => {
+            console.error(error);
+            goToPage(ADD_POSTS_PAGE);
+          });
       },
       posts
     });
@@ -166,3 +166,35 @@ const renderApp = () => {
 };
 
 goToPage(POSTS_PAGE);
+
+export function onClickLike(id, isLike) {
+  if (user) {
+    toggleLikes({ token: getToken() }, id, isLike).then((data) => {
+       posts = posts.map(item => {
+        if (item.id === data.post.id) {
+          return data.post;
+        }
+        return item;
+      })}).then(() => {
+renderApp()
+      })
+
+
+    //   if (userId) {
+    //     // goToPage(page, userId)
+
+
+    //   }
+    //   else {
+    //     console.log(posts);
+
+    //     goToPage(Page);
+    //   }
+    // });
+
+  }
+  else {
+    alert("Авторизуйтесь, чтобы иметь возможность ставить лайки");
+    goToPage(AUTH_PAGE);
+  }
+};

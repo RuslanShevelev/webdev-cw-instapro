@@ -87,4 +87,21 @@ export function postPost({token}, description, imageUrl) {
     return response.json();
   });
 };
-
+export function toggleLikes({ token }, {id}, islike) {
+  return fetch(`${postsHost}/${id}/${islike}`, {
+    method: "POST",
+    headers: {
+      Authorization: token,
+    },
+  })
+    .then((response) => {
+      if (response.status === 200) {
+        return response.json();
+      }
+      throw new Error("Нет авторизации");
+    })
+    // .then((data) => {
+    //   console.log(data);
+    //   return data;
+    // });
+};
