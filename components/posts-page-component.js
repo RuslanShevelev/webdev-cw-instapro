@@ -2,7 +2,8 @@ import { USER_POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
 import { posts, goToPage, onClickLike, user } from "../index.js";
 import { formatDistanceToNow } from "date-fns";
-import { ru } from 'date-fns/locale'
+import { ru } from 'date-fns/locale';
+
 export function renderPostsPageComponent({ appEl }) {
   // console.log("Актуальный список постов:", posts);
 
@@ -29,7 +30,7 @@ export function renderPostsPageComponent({ appEl }) {
     });
   }
   initLikeButtons();
-}
+};
 
 function getPost(post) {
   const fromDate = formatDistanceToNow(new Date(post.createdAt), { locale: ru });
@@ -56,9 +57,9 @@ function getPost(post) {
   <p class="post-date">
   Опубликовано ${fromDate} назад
   </p>
-</li>
-`
+</li>`
 };
+
 export function renderUserPosts({ appEl }) {
   const postsHtml = posts.map((post) => getUserPost(post)).join("");
   let postsAuthor = posts[0] ? posts[0].user : user;
@@ -90,6 +91,7 @@ export function renderUserPosts({ appEl }) {
 
   doCarousel(appEl);
 };
+
 const doCarousel = (appEl) => {
   const carouselContainer = appEl.querySelector(".carousel")
   if (carouselContainer) {
@@ -139,8 +141,7 @@ function initLikeButtons() {
       likeEl.classList.add('-loading-like');
       onClickLike({ id: likeEl.dataset.postId }, "like");
     })
-}
-
+};
 
 function getUserPost(post) {
   const fromDate = formatDistanceToNow(new Date(post.createdAt), { locale: ru });

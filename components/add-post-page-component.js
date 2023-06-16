@@ -1,7 +1,7 @@
 import { renderHeaderComponent } from "./header-component.js";
 import { uploadImage } from "../api.js";
 import { renderUserPosts } from "./posts-page-component.js";
-import {onDeleteClick} from "../index.js"
+import { onDeleteClick } from "../index.js"
 import { renderUploadImageComponent } from "./upload-image-component.js";
 
 export function renderAddPostPageComponent({ appEl, onAddPostClick, }) {
@@ -39,30 +39,6 @@ export function renderAddPostPageComponent({ appEl, onAddPostClick, }) {
         },
       });
     }
-
-
-    // const fileInput = document.querySelector(".file-upload-input");
-    // fileInput?.addEventListener("change", (() => {
-    //   const file = fileInput.files[0];
-    //   if (file) {
-    //     const fileLabel = document.querySelector(".file-upload-label");
-    //     fileLabel.setAttribute("disabled", !0),
-    //       fileLabel.textContent = "Загружаю файл...",
-    //       uploadImage({ file })
-    //         .then((responseData) => {
-    //           imageUrl = responseData.fileUrl,
-    //           render();
-    //         }
-    //         )
-    //   }
-    // }
-    // )),
-    //   document.querySelector(".file-upload-remove-button")?.addEventListener("click", (() => {
-    //     imageUrl = "",
-    //       render()
-    //   }
-    //   ))
-
     renderHeaderComponent({
       element: document.querySelector(".header-container"),
     });
@@ -70,27 +46,26 @@ export function renderAddPostPageComponent({ appEl, onAddPostClick, }) {
       appEl: document.querySelector(".my-posts-container"),
     })
 
-const deleteEls = document.querySelectorAll(".delete-button");
-for (const delEl of deleteEls) {
-  delEl.style.display = "block";
-  delEl.addEventListener("click", (event) => {
-    event.stopPropagation();
-    // console.log('проверка');
-    onDeleteClick({id: delEl.dataset.postId});
-  })
-}
+    const deleteEls = document.querySelectorAll(".delete-button");
+    for (const delEl of deleteEls) {
+      delEl.style.display = "block";
+      delEl.addEventListener("click", (event) => {
+        event.stopPropagation();
+        onDeleteClick({ id: delEl.dataset.postId });
+      })
+    }
 
     document.getElementById("add-button").addEventListener("click", () => {
       if (imageUrl) {
         onAddPostClick({
           description: document.getElementById("description").value
-          .replaceAll("&", "&amp;")
-          .replaceAll("<", "&lt;")
-          .replaceAll(">", "&gt;")
-          .replaceAll('"', "&quot;"),
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;"),
           imageUrl: imageUrl,
         });
-  
+
       } else {
         alert("Сначала выберите фото и опишите его ");
       }
