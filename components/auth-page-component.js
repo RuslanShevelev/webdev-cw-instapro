@@ -9,8 +9,8 @@ export function renderAuthPageComponent({ appEl, setUser }) {
   const renderForm = () => {
     const appHtml = `
       <div class="page-container">
-          <div class="header-container"></div>
-          <div class="form">
+        <div class="header-container"></div>
+        <form class="form">
               <h3 class="form-title">
                 ${
                   isLoginMode
@@ -19,7 +19,6 @@ export function renderAuthPageComponent({ appEl, setUser }) {
                 }
                 </h3>
               <div class="form-inputs">
-    
                   ${
                     !isLoginMode
                       ? `
@@ -28,17 +27,13 @@ export function renderAuthPageComponent({ appEl, setUser }) {
                       `
                       : ""
                   }
-                  
-                  <input type="text" id="login-input" class="input" placeholder="Логин" />
-                  <input type="password" id="password-input" class="input" placeholder="Пароль" />
-                  
+                  <input type="text" id="login-input" autocomplete="username" class="input" placeholder="Логин" />
+                  <input type="password" id="password-input" class="input" autocomplete="current-password" placeholder="Пароль" />
                   <div class="form-error"></div>
-                  
                   <button class="button" id="login-button">${
                     isLoginMode ? "Войти" : "Зарегистрироваться"
                   }</button>
               </div>
-            
               <div class="form-footer">
                 <p class="form-footer-title">
                   ${isLoginMode ? "Нет аккаунта?" : "Уже есть аккаунт?"}
@@ -46,14 +41,13 @@ export function renderAuthPageComponent({ appEl, setUser }) {
                     ${isLoginMode ? "Зарегистрироваться." : "Войти."}
                   </button>
                 </p> 
-               
-              </div>
-          </div>
+              </div> 
+          </form>
+        
       </div>    
 `;
 
     appEl.innerHTML = appHtml;
-
     // Не вызываем перерендер, чтобы не сбрасывалась заполненная форма
     // Точечно обновляем кусочек дом дерева
     const setError = (message) => {
@@ -79,16 +73,24 @@ export function renderAuthPageComponent({ appEl, setUser }) {
       setError("");
 
       if (isLoginMode) {
-        const login = document.getElementById("login-input").value;
-        const password = document.getElementById("password-input").value;
+        const login = document.getElementById("login-input").value
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;");
+        const password = document.getElementById("password-input").value
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;");
 
         if (!login) {
-          alert("Введите логин");
+          setError("Введите логин");
           return;
         }
 
         if (!password) {
-          alert("Введите пароль");
+          setError("Введите пароль");
           return;
         }
 
@@ -97,6 +99,7 @@ export function renderAuthPageComponent({ appEl, setUser }) {
           password: password,
         })
           .then((user) => {
+            console.log(user);
             setUser(user.user);
           })
           .catch((error) => {
@@ -104,25 +107,38 @@ export function renderAuthPageComponent({ appEl, setUser }) {
             setError(error.message);
           });
       } else {
-        const login = document.getElementById("login-input").value;
-        const name = document.getElementById("name-input").value;
-        const password = document.getElementById("password-input").value;
+        const login = document.getElementById("login-input").value
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;");
+        const name = document.getElementById("name-input").value
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;");
+        const password = document.getElementById("password-input").value
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;");
+
         if (!name) {
-          alert("Введите имя");
+          setError("Введите имя");
           return;
         }
         if (!login) {
-          alert("Введите логин");
+          setError("Введите логин");
           return;
         }
 
         if (!password) {
-          alert("Введите пароль");
+          setError("Введите пароль");
           return;
         }
 
         if (!imageUrl) {
-          alert("Не выбрана фотография");
+          setError("Не выбрана фотография");
           return;
         }
 
@@ -133,6 +149,7 @@ export function renderAuthPageComponent({ appEl, setUser }) {
           imageUrl,
         })
           .then((user) => {
+            console.log(user);
             setUser(user.user);
           })
           .catch((error) => {

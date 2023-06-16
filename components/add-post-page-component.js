@@ -1,7 +1,10 @@
 import { renderHeaderComponent } from "./header-component.js";
 import { uploadImage } from "../api.js";
 import { renderUserPosts } from "./posts-page-component.js";
-export function renderAddPostPageComponent({ appEl, onAddPostClick, posts }) {
+import {onDeleteClick} from "../index.js"
+import { renderUploadImageComponent } from "./upload-image-component.js";
+
+export function renderAddPostPageComponent({ appEl, onAddPostClick, }) {
   let imageUrl = "";
   const render = () => {
     // TODO: Реализовать страницу добавления поста
@@ -12,13 +15,6 @@ export function renderAddPostPageComponent({ appEl, onAddPostClick, posts }) {
           <h3 class="form-title">Добавить пост</h3>
           <div class="form-inputs">
             <div class="upload-image-container">
-              <div class="upload=image">
-              ${imageUrl ? `\n <div class="file-upload-image-conrainer">\n
-              <img class="file-upload-image" src="${imageUrl}">\n
-              <button class="file-upload-remove-button button">Заменить фото</button>\n
-              </div> \n
-              ` : '\n <label class="file-upload-label secondary-button">\n <input\n type="file"\n class="file-upload-input"\n style="display:none"\n />\n Выберите фото\n </label>\n \n'}
-              </div>
             </div>
             <label>
               Опишите фотографию:
@@ -33,27 +29,39 @@ export function renderAddPostPageComponent({ appEl, onAddPostClick, posts }) {
 
     appEl.innerHTML = appHtml;
 
-    const fileInput = document.querySelector(".file-upload-input");
-    fileInput?.addEventListener("change", (() => {
-      const file = fileInput.files[0];
-      if (file) {
-        const fileLabel = document.querySelector(".file-upload-label");
-        fileLabel.setAttribute("disabled", !0),
-          fileLabel.textContent = "Загружаю файл...",
-          uploadImage({ file })
-            .then((responseData) => {
-              imageUrl = responseData.fileUrl,
-              render();
-            }
-            )
-      }
+    const uploadImageContainer = appEl.querySelector(".upload-image-container");
+
+    if (uploadImageContainer) {
+      renderUploadImageComponent({
+        element: appEl.querySelector(".upload-image-container"),
+        onImageUrlChange(newImageUrl) {
+          imageUrl = newImageUrl;
+        },
+      });
     }
-    )),
-      document.querySelector(".file-upload-remove-button")?.addEventListener("click", (() => {
-        imageUrl = "",
-          render()
-      }
-      ))
+
+
+    // const fileInput = document.querySelector(".file-upload-input");
+    // fileInput?.addEventListener("change", (() => {
+    //   const file = fileInput.files[0];
+    //   if (file) {
+    //     const fileLabel = document.querySelector(".file-upload-label");
+    //     fileLabel.setAttribute("disabled", !0),
+    //       fileLabel.textContent = "Загружаю файл...",
+    //       uploadImage({ file })
+    //         .then((responseData) => {
+    //           imageUrl = responseData.fileUrl,
+    //           render();
+    //         }
+    //         )
+    //   }
+    // }
+    // )),
+    //   document.querySelector(".file-upload-remove-button")?.addEventListener("click", (() => {
+    //     imageUrl = "",
+    //       render()
+    //   }
+    //   ))
 
     renderHeaderComponent({
       element: document.querySelector(".header-container"),
@@ -67,14 +75,19 @@ for (const delEl of deleteEls) {
   delEl.style.display = "block";
   delEl.addEventListener("click", (event) => {
     event.stopPropagation();
-    console.log('проверка');
+    // console.log('проверка');
+    onDeleteClick({id: delEl.dataset.postId});
   })
 }
 
     document.getElementById("add-button").addEventListener("click", () => {
       if (imageUrl) {
         onAddPostClick({
-          description: document.getElementById("description").value,
+          description: document.getElementById("description").value
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;"),
           imageUrl: imageUrl,
         });
   

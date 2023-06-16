@@ -1,4 +1,4 @@
-import { getPosts, postPost, toggleLikes } from "./api.js";
+import { getPosts, postPost, toggleLikes, deletePost } from "./api.js";
 import { renderAddPostPageComponent } from "./components/add-post-page-component.js";
 import { renderAuthPageComponent } from "./components/auth-page-component.js";
 import {
@@ -19,12 +19,12 @@ import {
 export let user = getUserFromLocalStorage();
 export let page = null;
 export let posts = [];
-
+console.log(user);
 const getToken = () => {
   const token = user ? `Bearer ${user.token}` : undefined;
   return token;
 };
-
+// console.log(token);
 export const logout = () => {
   user = null;
   removeUserFromLocalStorage();
@@ -148,7 +148,7 @@ const renderApp = () => {
       posts
     });
   };
-
+  
   if (page === POSTS_PAGE) {
     return renderPostsPageComponent({
       appEl,
@@ -178,7 +178,28 @@ export function onClickLike(id, isLike) {
       })}).then(() => {
 renderApp()
       })
+   }
+  else {
+    alert("Авторизуйтесь, чтобы иметь возможность ставить лайки");
+    goToPage(AUTH_PAGE);
+  }
+};
 
+export function onDeleteClick({id}) {
+  if (user) {
+    deletePost({ token: getToken() }, {id}).then(() => {
+      //  posts = posts.map(item => {
+      //   if (item.id === data.post.id) {
+      //     return data.post;
+      //   }
+      //   return item;
+      // })}).then(() => {
+// renderApp();
+goToPage(ADD_POSTS_PAGE);
+      })          .catch((error) => {
+            console.error(error);
+
+          });
 
     //   if (userId) {
     //     // goToPage(page, userId)
@@ -192,9 +213,9 @@ renderApp()
     //   }
     // });
 
-  }
-  else {
-    alert("Авторизуйтесь, чтобы иметь возможность ставить лайки");
-    goToPage(AUTH_PAGE);
+//   }
+//   else {
+//     alert("Авторизуйтесь, чтобы иметь возможность ставить лайки");
+//     goToPage(AUTH_PAGE);
   }
 };

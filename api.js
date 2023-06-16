@@ -1,7 +1,9 @@
 // Замени на свой, чтобы получить независимый от других набор данных.
 // "боевая" версия инстапро лежит в ключе prod
 const personalKey = "prod";
-const baseHost = "https://webdev-hw-api.vercel.app";
+// const personalKey = "ruslan-shevelev";
+
+const baseHost = "https://wedev-api.sky.pro";
 const postsHost = `${baseHost}/api/v1/${personalKey}/instapro`;
 
 export function getPosts({ token }, id) {
@@ -15,7 +17,6 @@ export function getPosts({ token }, id) {
       if (response.status === 401) {
         throw new Error("Нет авторизации");
       }
-
       return response.json();
     })
     .then((data) => {
@@ -37,6 +38,7 @@ export function registerUser({ login, password, name, imageUrl }) {
     if (response.status === 400) {
       throw new Error("Такой пользователь уже существует");
     }
+    console.log(response);
     return response.json();
   });
 }
@@ -104,4 +106,22 @@ export function toggleLikes({ token }, {id}, islike) {
     //   console.log(data);
     //   return data;
     // });
+};
+export function deletePost({ token }, {id}) {
+  return fetch(`${postsHost}/${id}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: token,
+    },
+  })
+    .then((response) => {
+      // if (response.status === 201) {
+        return response.json();
+      })
+      // throw new Error();
+    // })
+    .then((data) => {
+      console.log(data);
+      return data;
+    });
 };
