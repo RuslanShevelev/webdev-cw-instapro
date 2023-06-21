@@ -111,13 +111,15 @@ const renderApp = () => {
       appEl,
       setUser: (newUser) => {
         user = newUser;
-        saveUserToLocalStorage(user);
+        saveUserToLocalStorage(newUser);
+        // setTimeout(() => goToPage(POSTS_PAGE), 5000);
+        // user = getUserFromLocalStorage();
         goToPage(POSTS_PAGE);
       },
-      user,
+      // user,
       goToPage,
     });
-  }
+  };
 
   if (page === ADD_POSTS_PAGE) {
     return renderAddPostPageComponent({

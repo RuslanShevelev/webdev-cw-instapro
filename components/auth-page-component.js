@@ -1,8 +1,8 @@
 import { loginUser, registerUser } from "../api.js";
 import { renderHeaderComponent } from "./header-component.js";
 import { renderUploadImageComponent } from "./upload-image-component.js";
-
-export function renderAuthPageComponent({ appEl, setUser }) {
+import { getUserFromLocalStorage } from "../helpers.js";
+export function renderAuthPageComponent( {appEl, setUser}, user, goToPage, ) {
   let isLoginMode = true;
   let imageUrl = "";
 
@@ -12,27 +12,24 @@ export function renderAuthPageComponent({ appEl, setUser }) {
         <div class="header-container"></div>
         <form class="form">
               <h3 class="form-title">
-                ${
-                  isLoginMode
-                    ? "Вход в&nbsp;Instapro"
-                    : "Регистрация в&nbsp;Instapro"
-                }
+                ${isLoginMode
+        ? "Вход в&nbsp;Instapro"
+        : "Регистрация в&nbsp;Instapro"
+      }
                 </h3>
               <div class="form-inputs">
-                  ${
-                    !isLoginMode
-                      ? `
+                  ${!isLoginMode
+        ? `
                       <div class="upload-image-container"></div>
                       <input type="text" id="name-input" class="input" placeholder="Имя" />
                       `
-                      : ""
-                  }
+        : ""
+      }
                   <input type="text" id="login-input" autocomplete="username" class="input" placeholder="Логин" />
                   <input type="password" id="password-input" class="input" autocomplete="current-password" placeholder="Пароль" />
                   <div class="form-error"></div>
-                  <button class="button" id="login-button">${
-                    isLoginMode ? "Войти" : "Зарегистрироваться"
-                  }</button>
+                  <button class="button" id="login-button">${isLoginMode ? "Войти" : "Зарегистрироваться"
+      }</button>
               </div>
               <div class="form-footer">
                 <p class="form-footer-title">
@@ -71,18 +68,17 @@ export function renderAuthPageComponent({ appEl, setUser }) {
 
     document.getElementById("login-button").addEventListener("click", () => {
       setError("");
-
       if (isLoginMode) {
         const login = document.getElementById("login-input").value
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;");
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;");
         const password = document.getElementById("password-input").value
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;");
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;");
 
         if (!login) {
           setError("Введите логин");
@@ -93,14 +89,12 @@ export function renderAuthPageComponent({ appEl, setUser }) {
           setError("Введите пароль");
           return;
         }
-
         loginUser({
           login: login,
           password: password,
         })
-          .then((user) => {
-            console.log(user);
-            setUser(user.user);
+        .then((data) => {
+            setUser(data.user);
           })
           .catch((error) => {
             console.warn(error);
@@ -108,20 +102,20 @@ export function renderAuthPageComponent({ appEl, setUser }) {
           });
       } else {
         const login = document.getElementById("login-input").value
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;");
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;");
         const name = document.getElementById("name-input").value
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;");
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;");
         const password = document.getElementById("password-input").value
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;");
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;");
 
         if (!name) {
           setError("Введите имя");
