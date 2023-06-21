@@ -112,11 +112,9 @@ const renderApp = () => {
       setUser: (newUser) => {
         user = newUser;
         saveUserToLocalStorage(newUser);
-        // setTimeout(() => goToPage(POSTS_PAGE), 5000);
-        // user = getUserFromLocalStorage();
         goToPage(POSTS_PAGE);
       },
-      // user,
+      user,
       goToPage,
     });
   };
