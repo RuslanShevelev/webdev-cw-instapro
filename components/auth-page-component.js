@@ -53,100 +53,116 @@ export function renderAuthPageComponent({ appEl, setUser }) {
 `;
 
     appEl.innerHTML = appHtml;
+const setError = (message) => {
+  appEl.querySelector(".form-error").textContent = message;
+};
 
-    // Не вызываем перерендер, чтобы не сбрасывалась заполненная форма
-    // Точечно обновляем кусочек дом дерева
-    const setError = (message) => {
-      appEl.querySelector(".form-error").textContent = message;
-    };
+renderHeaderComponent({
+  element: document.querySelector(".header-container"),
+});
 
-    renderHeaderComponent({
-      element: document.querySelector(".header-container"),
-    });
+const uploadImageContainer = appEl.querySelector(".upload-image-container");
 
-    const uploadImageContainer = appEl.querySelector(".upload-image-container");
+if (uploadImageContainer) {
+  renderUploadImageComponent({
+    element: appEl.querySelector(".upload-image-container"),
+    onImageUrlChange(newImageUrl) {
+      imageUrl = newImageUrl;
+    },
+  });
+}
 
-    if (uploadImageContainer) {
-      renderUploadImageComponent({
-        element: appEl.querySelector(".upload-image-container"),
-        onImageUrlChange(newImageUrl) {
-          imageUrl = newImageUrl;
-        },
-      });
+document.getElementById("login-button").addEventListener("click", () => {
+  setError("");
+  if (isLoginMode) {
+    const login = document.getElementById("login-input").value
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;");
+    const password = document.getElementById("password-input").value
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;");
+
+    if (!login) {
+      setError("Введите логин");
+      return;
     }
 
-    document.getElementById("login-button").addEventListener("click", () => {
-      setError("");
+    if (!password) {
+      setError("Введите пароль");
+      return;
+    }
+    loginUser({
+      login: login,
+      password: password,
+    })
+    .then((data) => {
+        setUser(data.user);
+      })
+      .catch((error) => {
+        console.warn(error);
+        setError(error.message);
+      });
+  } else {
+    const login = document.getElementById("login-input").value
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;");
+    const name = document.getElementById("name-input").value
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;");
+    const password = document.getElementById("password-input").value
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;");
 
-      if (isLoginMode) {
-        const login = document.getElementById("login-input").value;
-        const password = document.getElementById("password-input").value;
+    if (!name) {
+      setError("Введите имя");
+      return;
+    }
+    if (!login) {
+      setError("Введите логин");
+      return;
+    }
 
-        if (!login) {
-          alert("Введите логин");
-          return;
-        }
+    if (!password) {
+      setError("Введите пароль");
+      return;
+    }
 
-        if (!password) {
-          alert("Введите пароль");
-          return;
-        }
+    if (!imageUrl) {
+      setError("Не выбрана фотография");
+      return;
+    }
 
-        loginUser({
-          login: login,
-          password: password,
-        })
-          .then((user) => {
-            setUser(user.user);
-          })
-          .catch((error) => {
-            console.warn(error);
-            setError(error.message);
-          });
-      } else {
-        const login = document.getElementById("login-input").value;
-        const name = document.getElementById("name-input").value;
-        const password = document.getElementById("password-input").value;
-        if (!name) {
-          alert("Введите имя");
-          return;
-        }
-        if (!login) {
-          alert("Введите логин");
-          return;
-        }
+    registerUser({
+      login: login,
+      password: password,
+      name: name,
+      imageUrl,
+    })
+      .then((user) => {
+        console.log(user);
+        setUser(user.user);
+      })
+      .catch((error) => {
+        console.warn(error);
+        setError(error.message);
+      });
+  }
+});
 
-        if (!password) {
-          alert("Введите пароль");
-          return;
-        }
-
-        if (!imageUrl) {
-          alert("Не выбрана фотография");
-          return;
-        }
-
-        registerUser({
-          login: login,
-          password: password,
-          name: name,
-          imageUrl,
-        })
-          .then((user) => {
-            setUser(user.user);
-          })
-          .catch((error) => {
-            console.warn(error);
-            setError(error.message);
-          });
-      }
-    });
-
-    document.getElementById("toggle-button").addEventListener("click", () => {
-      isLoginMode = !isLoginMode;
-      renderForm();
-    });
-  };
-
+document.getElementById("toggle-button").addEventListener("click", () => {
+  isLoginMode = !isLoginMode;
   renderForm();
-}
+});
+};
+renderForm();
+};

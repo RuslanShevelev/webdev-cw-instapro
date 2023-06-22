@@ -53,6 +53,23 @@ p {
   color: #ffffff;
   border: none;
 }
+.delete-button{
+  padding: 10px 13px 13px;
+  font-size: 18px;
+  line-height: 22px;
+  border-radius: 5px;
+  color: #ffffff;
+  border: none;
+  height: 50px;
+  background-color: #dd9a9a;
+display: none;
+}
+.delete-button-active{
+  display: block;
+}
+.delete-button:hover{
+  background-color: #ce1e1e;
+}
 
 .link-button {
   display: inline;
